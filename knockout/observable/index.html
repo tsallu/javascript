@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<!-- DOMツリー構築前だとエラーになる -->
+		<!-- <script>
+			var myViewModel = {
+				personName: ko.observable('ボブ'),
+				personAge: ko.observable(123)
+			};
+			ko.applyBindings(myViewModel);
+		</script> -->
+	</head>
+	
+	<body>
+		<p>お名前： <span data-bind="text: personName"></span></p>
+		<p>年齢：<span data-bind="text: personAge"></span></p>
+		<button data-bind="click: buttonClicked">変更ボタン</button>
+		<button onclick="disposeViewModel()">サブスク破棄ボタン</button>
+	</body>
+
+	<!-- DOMツリー構築後に記述 -->
+	<script>
+		var myViewModel = {
+			personName: ko.observable('ボブ'),
+			personAge: ko.observable(123),
+			buttonClicked: function(obj,event) {
+				// メソッドチェーンで複数プロパティの変更可能
+				let newName = window.prompt('新しい名前を入力してください。');
+				let newAge = window.prompt('新しい年齢を入力してください。');
+				if (!newName && !newAge) {
+					window.alert('名前または年齢が未入力です。');
+					return;
+				}
+				this.personName(newName).personAge(Number(newAge));
+			}
+		};
+		ko.applyBindings(myViewModel);
+
+		// プロパティ変更をサブスクライブ
+		var subscription = myViewModel.personName.subscribe(function(){
+			// プロパティの取得は、プロパティ名+()
+			window.alert(`名前が${myViewModel.personName()}に変更されました。`);
+		});
+
+		function disposeViewModel() {
+			// サブスクリプションの破棄（プロパティ変更の通知を受け取らなくする）
+			subscription.dispose();
+		};
+	</script>
+</html>
