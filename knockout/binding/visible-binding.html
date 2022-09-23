@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<button data-bind="click: button1Clicked">表示切り替え1</button>
+		<button data-bind="click: button2Clicked">表示切り替え2</button>
+		<!-- visibleバインディング -->
+		<!-- displayスタイル定義より優先される -->
+		<div data-bind="visible: shouldShowMessage" style="display: none;">
+			shouldShowMessageがtrueです。
+		</div>
+		<!-- パラメータの値は式でもOK -->
+		<div data-bind="visible: myItems().length > 0">
+			配列は1件以上存在します。
+		</div>		
+	</body>
+
+	<script>
+		var viewmodel = {
+			shouldShowMessage: ko.observable(true),
+			myItems: ko.observableArray([1,2,3,4]),
+			button1Clicked: function(obj, event) {
+				this.shouldShowMessage(!this.shouldShowMessage());
+			},
+			button2Clicked: function(obj, event) {
+				if (this.myItems().length != 0) {
+					this.myItems.removeAll();
+				} else {
+					this.myItems.push(1);
+				}
+			}
+		};
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
