@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<ul type="circle" data-bind="foreach: myObservableArray">
+			<li data-bind="text: $data.name">
+		</ul>
+		<button data-bind="click: deleteFirstElement">要素削除</button>
+	</body>
+
+	<script>
+		var myViewModel = {
+			// 空の配列
+			myObservableEmptyArray: ko.observableArray(),
+			// 初期値設定
+			myObservableArray: ko.observableArray([
+				{ name: "Bungle", type: "Bear" },
+				{ name: "George", type: "Hippo" },
+				{ name: "Zippy", type: "Unknown" }
+			]),
+			deleteFirstElement: function(obj,event){
+				if (this.myObservableArray().length != 0) {
+					// knockoutのメソッド呼び出し ※こっち推奨
+					this.myObservableArray.shift();
+					// JavaScriptのメソッド呼び出し
+					//this.myObservableArray().shift();
+
+					window.alert('配列の要素を1つ削除しました。');
+				} else {
+					window.alert('配列は空です。');
+				}
+			}
+		};
+		ko.applyBindings(myViewModel);
+	</script>
+</html>
