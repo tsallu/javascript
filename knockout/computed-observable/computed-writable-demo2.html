@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<div class="heading">
+			<input type="checkbox" data-bind="checked: selectedAllProduce" title="Select all/none"/> Produce
+		</div>
+		<div data-bind="foreach: produce">
+			<label>
+				<!-- checkValueバインド: value属性にラベルと同じ文字列を設定する -->
+				<!-- checkedバインド: 指定された配列にvalue属性の値が含まれていればチェックする -->
+				<input type="checkbox" data-bind="checkedValue: $data, checked: $parent.selectedProduce"/>
+				<span data-bind="text: $data"></span>
+			</label>
+		</div>
+	</body>
+
+	<script>
+		// ビューモデルクラス
+		function AppViewModel() {
+			var that = this;
+
+			that.produce = ['Apple', 'Banana', 'Celery', 'Corn', 'Orange', 'Spinach'];
+			that.selectedProduce = ko.observableArray(['Corn', 'Orange']);
+			that.selectedAllProduce = ko.pureComputed({
+				read: function() {
+					// 全部選択済みかどうかをbool値で返却
+					return that.selectedProduce().length === that.produce.length;
+				},
+				write: function(val) {
+					that.selectedProduce(val ? that.produce.slice(0) : []);
+				},
+				owner: that
+			});
+		}
+
+		var viewmodel = new AppViewModel();
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

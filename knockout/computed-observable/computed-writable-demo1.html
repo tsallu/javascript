@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<div>First name: <span data-bind="text: firstName"></span></div>
+		<div>Last name: <span data-bind="text: lastName"></span></div>
+		<!-- textInputバインド、入力可能 -->
+		<div class="heading">Hello, <input data-bind="textInput: fullName"/></div>
+	</body>
+
+	<script>
+		// ビューモデルクラス
+		function AppViewModel() {
+			var that = this;
+
+			that.firstName = ko.observable('Planet');
+			that.lastName = ko.observable('Earth');
+			// 書き込み可能なComputedObservableプロパティ
+			// 関連するObservableプロパティにも変更を反映する
+			that.fullName = ko.pureComputed({
+				// ゲッター（コールバック関数）
+				read: function() {
+					return that.firstName() + " " + that.lastName();
+				},
+				// セッター（コールバック関数）
+				write: function(val) {
+					var lastSpacePosition = val.lastIndexOf(" ");
+					if (lastSpacePosition > 0) {
+						that.firstName(val.substring(0, lastSpacePosition));
+						that.lastName(val.substring(lastSpacePosition + 1));
+					}
+				},
+				// this参照
+				owner: that
+			});
+		}
+
+		var viewmodel = new AppViewModel();
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

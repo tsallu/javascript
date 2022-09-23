@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		The name is <span data-bind="text: fullName"></span><br/>
+		<!-- ()が必要 -->
+		The name is <span data-bind="text: fullName2()"></span>
+	</body>
+
+	<script>
+		// ビューモデルクラス
+		function AppViewModel() {
+			// コンテキスト
+			// selfは使わないほうがよさげ
+			var that = this;
+
+			that.firstName = ko.observable('Bob'),
+			that.lastName = ko.observable('Smith')
+			// computedObservableプロパティ
+			// observableプロパティを複数組み合わせたプロパティ
+			// 各プロパティの変更をサブスクライブする
+			// 通常はreadonlyプロパティ
+			that.fullName = ko.computed(function() {
+				// プロパティの取得は、プロパティ名+()
+				return that.firstName() + " " + that.lastName();
+			}, that);
+
+			// UIのみで使用するプロパティの場合はメソッド化するとよい
+			that.fullName2 = function() {
+				// プロパティの取得は、プロパティ名+()
+				return that.firstName() + " " + that.lastName();
+			};
+		}
+
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+
+		// observableなプロパティかどうか判定
+		// observable or observableArray or computedObservable
+		console.log(ko.isObservable(viewmodel.firstName) ? "Observable" : "Not observable");
+
+		// ComputedObservableプロパティかどうか判定
+		console.log(ko.isObservable(viewmodel.fullName) ? "ComputedObservable" : "Not ComputedObservable");
+
+	</script>
+</html>

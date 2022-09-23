@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<div>First name: <input data-bind="textInput: firstName"></input></div>
+		<div>Last name: <input data-bind="textInput: lastName"></input></div>
+		<div>Hello, <span data-bind="text: fullName"></span></div>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.firstName = ko.observable('Planet');
+			that.lastName = ko.observable('Earth');
+			that.fullName = ko.pureComputed({
+				read: function() {
+					// peek()を使ってobservableプロパティにアクセスした場合、
+					// 依存関係がトラッキングされなくなる。
+					// なので、lastNameが変更されてもサブスクライブされなくなる
+					return that.firstName() + " " + that.lastName.peek();
+				},
+				owner: that
+			});
+		}
+
+		var viewmodel = new AppViewModel();
+		ko.applyBindings(viewmodel);
+
+		// TODO
+		// ko.ignoreDependencies()
+	</script>
+</html>
