@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<!-- ハイフンを含むクラス名の場合は、キャメルケースに変更する（font-style → fontStyle） -->
+		<div data-bind="style: { color: currentProfit() < 0 ? 'red' : 'blue', fontStyle: isItalic() > 0 ? 'italic' : 'normal'}">
+			profit and loss information
+		</div>
+		<!-- clickバインディングには()はいらない -->
+		<!-- ()をつけると初期ロード時にイベントが発火してしまう -->
+		<button data-bind="click: buttonClick1">色変更ボタン</button>
+		<button data-bind="click: buttonClick2">フォントスタイル変更ボタン</button>
+	</body>
+
+	<script>
+		var viewmodel = {
+			currentProfit: ko.observable(150000),
+			isItalic: ko.observable(150000),
+			buttonClick1: function() {
+				this.currentProfit(-this.currentProfit());
+			},
+			buttonClick2: function() {
+				this.isItalic(-this.isItalic());
+			}
+		};
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<style>
+			.profitWarning {
+				color: red;
+			}
+			.major {
+				text-decoration: underline;
+			}
+			.highlight {
+				font-style: italic;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<!-- 適用するクラス名を''で囲むと、複数のスタイルを同時適用できる -->
+		<!-- ハイフンを含むクラス名の場合は''で囲むのが必須（my-classなど） -->
+		<div data-bind="css: { profitWarning: currentProfit() < 0, 'major highlight': isSevere() > 0}">
+			profit and loss information
+		</div>
+		<button data-bind="click: buttonClick1">色変更ボタン</button>
+		<button data-bind="click: buttonClick2">文字スタイル変更ボタン</button>
+	</body>
+
+	<script>
+		var viewmodel = {
+			currentProfit: ko.observable(150000),
+			isSevere: ko.observable(200000),
+			buttonClick1: function() {
+				this.currentProfit(-this.currentProfit());
+			},
+			buttonClick2: function() {
+				this.isSevere(-this.isSevere());
+			}
+		};
+		ko.applyBindings(viewmodel);
+
+	</script>
+</html>

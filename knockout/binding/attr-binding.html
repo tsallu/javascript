@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<style>
+		</style>
+	</head>
+	
+	<body>
+		<!-- 属性追加 -->
+		<a data-bind="attr: { href: url, title: details }">リンク</a>
+	</body>
+
+	<script>
+		var viewmodel = {
+			url: ko.observable("http://kojs.sukobuto.com/docs/attr-binding"),
+			details: ko.observable("knockout.js ドキュメント")
+		};
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

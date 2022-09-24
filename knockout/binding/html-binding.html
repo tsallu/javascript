@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<p>↓埋め込みHTML</p>
+		<div data-bind="html: htmlString"></div>
+	</body>
+
+	<script>
+		var viewmodel = {
+			htmlString: ko.observable()
+		};
+		
+		viewmodel.htmlString("<strong>埋め込みHTML文字列</strong>")
+
+		ko.applyBindings(viewmodel);
+
+	</script>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	
+	<body>
+		<p><span data-bind="text: message"></span></p>
+		<p>気温：<span data-bind="text: temperature"></span> ℃</p>
+		<p>本日の天気：<span data-bind="text: messageTemperature"></span></p>
+	</body>
+
+	<script>
+		var viewmodel = {
+			message: ko.observable("Hello, world!!"),
+			temperature: ko.observable(35),
+			// エラーになる：temperature is not a function
+			// messageTemperature: ko.pureComputed(function() {
+			// 	console.log(this.temperature());
+			// 	return this.temperature() > 30 ? "暑い一日になりそうです。" : "過ごしやすい一日になりそうです。";
+			// }, this)
+		};
+
+		viewmodel.messageTemperature = ko.pureComputed(function() {
+			return this.temperature() > 30 ? "暑い一日になりそうです。" : "過ごしやすい一日になりそうです。";
+		}, viewmodel);
+
+		ko.applyBindings(viewmodel);
+
+	</script>
+</html>
