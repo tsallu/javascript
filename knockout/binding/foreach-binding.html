@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<button data-bind="click: addPerson">追加</button>
+		<table>
+			<thead>
+				<tr>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<!-- as で別名設定可能、 別名は''必須-->
+			<!-- 配列要素の増減に応じて、処理を実行可能 -->
+			<!-- afterRender,afterAdd,beforeRemove,beforeMove,afterMove -->
+			<tbody data-bind="foreach: {data: people, as: 'person', afterAdd: yellowFadeIn}">
+			<!-- <tbody data-bind="foreach: people"> -->
+				<tr>
+					<!-- $index, $dataで処理中の配列のインデックス、要素を取得できる -->
+					<!-- <th data-bind="text: firstName"></th> -->
+					<th data-bind="text: person.firstName"></th>
+					<!-- $data.プロパティ名の記述は冗長なので、非推奨 -->
+					<!-- <th data-bind="text: $data.firstName"></th> -->
+					<!-- <th data-bind="text: lastName"></th> -->
+					<th data-bind="text: person.lastName"></th>
+					<!-- <th data-bind="text: $data.lastName"></th> -->
+
+					<!-- $parentでforeachの外側のプロパティにアクセスできる -->
+					<th data-bind="click: $parent.removePerson">削除</th>
+				</tr>
+			</tbody>
+		</table>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.people = ko.observableArray([
+				{ firstName: 'Bert', lastName: 'Bertington' },
+				{ firstName: 'Charles', lastName: 'Charlesforth' },
+				{ firstName: 'Denise', lastName: 'Dentiste' }
+			]);
+			that.addPerson = function() {
+				that.people.push({firstName: "dummyFirstName", lastName: "dummyLastName"})
+			};
+			that.removePerson = function(person) {
+				// TODO
+				// その行のデータが引数で受け取れるっぽい、なぜ？
+				that.people.remove(person);
+				//that.people.remove(this);
+			};
+			that.yellowFadeIn = function(element, index, data) {
+				console.log("要素が追加されました。")
+	        }
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
