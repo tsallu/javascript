@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<label>
+			<input type="checkbox" data-bind="checked: displayMessage"/>メッセージ表示
+		</label>
+		<div data-bind="if: displayMessage">if</div>
+		<div data-bind="ifnot: displayMessage">ifnot</div>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.displayMessage = ko.observable(false);
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
