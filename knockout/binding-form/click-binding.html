@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<span data-bind="text: numberOfClicks"></span>回クリックされました。
+		<button data-bind="click: incrementClickCounter" >クリックして下さい</button>
+		<!-- viewmodelの関数でなくてもバインディング可能 -->
+		<button data-bind="click: incrementClickCounterFunc" >クリックして下さい(Function)</button>
+
+		<ul data-bind="foreach: places">
+			<li>
+				<span data-bind="text: $data"></span>
+				<!-- <button data-bind="click: $parent.removePlace">Remove1</button> -->
+				<!-- data,eventオブジェクト以外に任意の引数を追加したい場合 -->
+				<!-- <button data-bind="click: function(data, event) { $parent.removePlace(data, event, '123') }">Remove2</button> -->
+				<button data-bind="click: $parent.removePlace.bind($data, '', '1234')">Remove3</button>
+			</li>
+		</ul>
+
+		<!-- aタグもclickバインディング可能 -->
+		<!-- href属性に指定したリンクに遷移させたい場合はバインディングしている関数からtrueを返却する必要あり -->
+		<a href="https://www.google.co.jp/" data-bind="click: aTagClick" target="_blank" >リンク</a>
+
+		<div data-bind="click: myDivHandler">
+			<!-- クリックイベントのバブリングを抑止 -->
+			<button data-bind="click: myButtonHandler, clickBubble: false">
+				ここをクリック(バグリングなし)
+			</button>
+			<button data-bind="click: myButtonHandler">
+				ここをクリック(バグリングあり)
+			</button>
+		</div>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.numberOfClicks = ko.observable(0);
+			that.places = ko.observableArray(['London', 'Paris', 'Tokyo']);
+
+			incrementClickCounter = function(data, event) {
+				that.numberOfClicks(that.numberOfClicks() + 1);
+			};
+			// 第一引数: 現在の処理中の配列の要素を受け取る
+			// 第二引数: eventオブジェクト
+			// that.removePlace = function(data, event) {
+			// 	// イベント種類
+			// 	console.log(event.type);
+
+            // 	that.places.remove(data)
+       		// };
+			that.removePlace = function(data, event, additionalParam) {
+				// イベント種類
+				console.log(event.type);
+				// 追加引数
+				console.log(additionalParam);
+
+            	that.places.remove(data)
+       		}
+			that.aTagClick = function() {
+				console.log("リンクがクリックされました。");
+
+				// href属性に指定したリンクに遷移させたい場合はtrueを返却する必要あり
+				return true;
+			};
+			that.myDivHandler = function(){
+				console.log("myDivHandlerが実行されました。");
+			};
+			that.myButtonHandler = function(){
+				console.log("myButtonHandlerが実行されました。");
+			}
+		}
+		var viewmodel = new AppViewModel();
+
+		// 関数
+		function incrementClickCounterFunc() {
+			viewmodel.numberOfClicks(viewmodel.numberOfClicks() + 1);
+		}
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
