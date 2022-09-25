@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<form data-bind="submit: getTweets">
+			Twitterアカウント：
+			<input data-bind="value: twitterName" />
+			<button type="submit">ツイートを取得</button>
+		</form>
+
+		<!-- バインディングコンテキストを指定 -->
+		<!-- 指定したコンテキストがnull or undefinedの場合は子エレメントは表示されない -->
+		<div data-bind="with: resultData">
+			<h3>最終取得日時: <span data-bind="text: retrievalDate"></h3>
+			<!-- ツイート内容の表示 -->
+			<ol data-bind="foreach: topTweets">
+				<li data-bind="text: text"></li>
+			</ol>
+
+			<!-- $parentで外側のプロパティにもアクセス可能 -->
+			<button data-bind="click: $parent.clearResults">ツイートをクリア</button>
+		</div>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.twitterName = ko.observable('@StephenFry');
+			that.resultData = ko.observable();
+			that.getTweets = function() {
+				// ダミーツイートデータ
+				that.resultData({
+					retrievalDate: new Date(),
+					topTweets: [
+						{text: "おはようございます。"},
+						{text: "こんにちは"},
+						{text: "こんばんは"}
+					]
+				});
+			};
+			that.clearResults = function() {
+				// that.resultData(null);
+				that.resultData(undefined);
+			};
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
