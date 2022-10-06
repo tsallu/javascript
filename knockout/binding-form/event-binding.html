@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!-- 指定したイベントが発生すると、指定の関数が呼び出される。 -->
+		<!-- 呼び出す関数はviewmodelの関数である必要はない -->
+		<ul data-bind="foreach: cityArray">
+			<li data-bind="text: $data, event: { mouseover: $parent.mouseroverHandler, mouseout: $parent.mouseroutHandler}"></li>
+		</ul>
+		<p><span data-bind="text: cityInterest"></span>に興味がありますか？</p>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.cityInterest = ko.observable();
+			that.cityArray = ko.observableArray(['London', 'New York', 'Tokyo']);	
+			that.mouseroverHandler = function(city, event) {
+				console.log(event.type);
+				that.cityInterest(city);
+			};
+			that.mouseroutHandler = function(city, event) {
+				console.log(event.type);
+				that.cityInterest();
+			};
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
