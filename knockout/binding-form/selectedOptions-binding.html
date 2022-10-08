@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			<!--
+				selectedOptionsバインディング:
+				 複数選択可能なドロップダウンの場合に、選択中の要素を配列型のプロパティにバインドする
+			-->
+			行き先：
+			<select data-bind="options: availableCountries,
+							   optionsText: 'countryName',
+							   optionsValue: 'countryName',
+							   optionsCaption: '-選択してください-',
+							   optionsAfterRender: setOptionDisable,
+							   selectedOptions: chosenCountries" multiple="true"></select>
+			→選択値：
+			<span data-bind="text: chosenCountries"></span>
+		</p>
+	</body>
+
+	<script>
+		var Country = function(name, population) {
+			this.countryName = name;
+			this.countryPopulation = population;
+			this.disable = (this.countryName.length < 4);
+    	};
+
+		function AppViewModel() {
+			var that = this;
+	
+			that.chosenCountries = ko.observable('');
+			that.availableCountries = ko.observableArray([
+				new Country("日本", 65000000),
+				new Country("イギリス", 65000000),
+            	new Country("アメリカ", 320000000),
+            	new Country("スウェーデン", 29000000)
+			]);
+			that.setOptionDisable = function(option, item) {
+				ko.applyBindingsToNode(option, {disable: item ? item.disable : false}, item)
+			};
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

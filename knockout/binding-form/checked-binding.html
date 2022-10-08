@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			ニュースメールを購読する：
+			<input type="checkbox" data-bind="checked: wantsNews">
+		</p>
+		<div data-bind="visible: wantsNews">
+			<!-- value属性の値がバインドした配列プロパティの要素に含まれればチャックが付く -->
+			<div><input type="checkbox" value="IT" data-bind="checked: newsCategoriesForCheckbox" />IT</div>
+			<div><input type="checkbox" value="Sports" data-bind="checked: newsCategoriesForCheckbox" />スポーツ</div>
+			<div><input type="checkbox" value="Economy" data-bind="checked: newsCategoriesForCheckbox" />経済</div>
+		</div>
+		<div data-bind="visible: wantsNews">
+			<!-- radioボタンをグループ化するには、name属性に同じ値を設定する -->
+			<div><input type="radio" name="newsCategoryGroup" value="IT" data-bind="checked: newsCategoryForRadio" />IT</div>
+			<div><input type="radio" name="newsCategoryGroup" value="Sports" data-bind="checked: newsCategoryForRadio" />スポーツ</div>
+			<div><input type="radio" name="newsCategoryGroup" value="Economy" data-bind="checked: newsCategoryForRadio" />経済</div>
+		</div>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+			
+			that.wantsNews = ko.observable(false);
+			that.newsCategoriesForCheckbox = ko.observableArray(["IT", "Sports"]);
+			that.newsCategoryForRadio = ko.observable("Sports");
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

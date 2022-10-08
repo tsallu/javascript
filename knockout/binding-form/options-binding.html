@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			optionsバインディング、選択肢に設定する配列を指定
+
+			行き先1：
+			<select data-bind="options: availableCountries1" size="5" multiple="true"></select>			
+		</p>
+		<p>
+			<!--
+				optionsTextパラメータ：
+				 optionsバインディングに指定された配列の要素がオブジェクトの場合、選択肢の文字列として表示するプロパティ名を指定する（''で囲むのを忘れずに）
+				optionsCaptionパラメータ：
+				 何も選択していない場合ののキャプション文字列
+				optionsValue:
+				 optionsTextパラメータ同様、valueパラメータに指定されたプロパティに設定するプロパティを指定
+				optionsAfterRender:
+				 各選択肢に対して実行するコールバック関数を設定する(ex)disableバインディングを設定するなど)
+			-->
+			行き先2：
+			<select data-bind="options: availableCountries2,
+							   optionsText: 'countryName',
+							   optionsValue: 'countryName',
+							   value: selectedCountry,
+							   optionsCaption: '-選択してください-',
+							   optionsAfterRender: setOptionDisable"></select>
+			→選択値：
+			<span data-bind="text: selectedCountry"></span>
+		</p>
+	</body>
+
+	<script>
+		var Country = function(name, population) {
+			this.countryName = name;
+			this.countryPopulation = population;
+			this.disable = (this.countryName.length < 4);
+    	};
+
+		function AppViewModel() {
+			var that = this;
+	
+			that.selectedCountry = ko.observable('');
+			that.availableCountries1 = ko.observableArray(['フランス', 'ドイツ', 'スペイン']);
+			that.availableCountries2 = ko.observableArray([
+				new Country("日本", 65000000),
+				new Country("イギリス", 65000000),
+            	new Country("アメリカ", 320000000),
+            	new Country("スウェーデン", 29000000)
+			]);
+			// 各選択肢に対して行う処理
+			// ここではdisableバインディングを設定している
+			that.setOptionDisable = function(option, item) {
+				ko.applyBindingsToNode(option, {disable: item ? item.disable : false}, item)
+			};
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

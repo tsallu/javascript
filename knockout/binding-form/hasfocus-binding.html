@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			名前:
+			<b data-bind="visible: !editing(), text: name, click: edit">&nbsp;</b>
+			<input data-bind="visible: editing, value: name, hasfocus: editing" />
+		</p>
+		<p><em>名前をクリックして編集, ロストフォーカスで変更を適用。</em></p>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+			
+			that.name = ko.observable('Bert Bertington');
+			that.editing = ko.observable(false);
+			that.edit = function() {
+				that.editing(true);
+			};
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
