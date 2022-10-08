@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			<input type="checkbox" data-bind="checked: hasCellphone">
+			携帯電話を持っている
+		</p>
+		<p>
+			<!-- booleanの反転の実装方法は、!プロパティ名() -->
+			<input type="text" data-bind="value: cellphoneNumber, disable: !hasCellphone()">
+		</p>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.hasCellphone = ko.observable(false);
+			that.cellphoneNumber = ko.observable('');
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

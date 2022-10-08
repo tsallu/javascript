@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			<!-- valueUpdateパラメータでプロパティの値を更新するイベントを指定可能 -->
+			<!-- イベント名は''で囲むことを忘れずに -->
+			<!-- 指定するイベントの例： keyup, keypress, afterkeydown -->
+			<!-- valueUpdateパラメータが指定ない場合は、ロストフォーカスで更新される -->
+			<!-- valueAllowUnsetパラメータはselectタグのみに適用できる。ほかのタグに設定しても動作に影響なし -->
+			ユーザー名：
+			<input data-bind="value: userName, valueUpdate: 'afterkeydown'">
+			→入力値：
+			<span data-bind="text: userName"></span>
+		</p>
+		<p>
+			パスワード：
+			<input type="password" data-bind="value: userPassword">
+			→入力値：
+			<span data-bind="text: userPassword"></span>
+		</p>
+		<p>
+			<!-- 選択肢にない値がvalueバインディングに指定されたプロパティにセットされている場合の挙動 -->
+			<!-- valueAllowUnset: trueの場合、選択肢にない値をプロパティに保持したままになる -->
+			<!-- valueAllowUnset: falseの場合、プロパティの値をundefinedで上書きする -->
+			<!-- valueAllowUnsetという名前がわかりづらい気がする。。 -->
+			国：
+			<select data-bind="options: countries,
+							   optionsCaption: '-選択してください。-',
+							   value: selectedCountry,
+							   valueAllowUnset: true">
+			</select>
+			→選択値：
+			<span data-bind="text: selectedCountry"></span>
+		</p>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.userName = ko.observable('');
+			that.userPassword = ko.observable('abc');
+			that.countries = ko.observableArray(['日本', 'ボリビア', 'ニュージーランド']);
+			that.selectedCountry = ko.observable('ラトビア');
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!-- formでsubmitバインディングが指定されている場合は、指定された関数を実行するのみでサーバー送信は実行されない -->
+		<!-- clickバインディングとの違いは、submitバインディングであればフォーム入力後Enterキーでsubmitできること -->
+		<form data-bind="submit: doSomething">
+			入力値：<input data-bind="textInput: inputValue"/>
+			<button type="submit">登録</button>
+		</form>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.inputValue = ko.observable();
+			// formElementが引数として渡される
+			that.doSomething = function(formElement) {
+				console.log('submit button clicked');
+				console.log(`入力値: ${that.inputValue()}`);
+			};
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

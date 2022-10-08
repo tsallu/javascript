@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!--
+			textInputバインディングとvalueバインディングの違い
+			textInputでは、オートコンプリート機能、ドラッグアンドドロップ、クリップボードイベントを含む
+		 	全ての種類の入力イベントに対応し即時にプロパティを更新する。
+		-->
+		<p>
+			ユーザー名：
+			<input data-bind="value: userName">
+			→入力値：
+			<span data-bind="text: userName"></span>
+		</p>
+		<p>
+			パスワード：
+			<input type="password" data-bind="textInput: userPassword">
+			→入力値：
+			<span data-bind="text: userPassword"></span>
+		</p>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.userName = ko.observable('');
+			that.userPassword = ko.observable('abc');
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
