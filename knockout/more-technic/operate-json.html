@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!--
+			・preタグ
+			　整形済みテキストとして表示
+			　ソースコードをそのまま表示させたりするのに便利
+			・toJSON
+			　引数はJSON.stringifyと同じ
+		-->
+		<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+			
+			that.firstName = ko.observable("Bert");
+    		that.lastName = ko.observable("Smith");
+			that.pets = ko.observableArray(["Cat", "Dog", "Fish"]);
+		    that.type = "Customer"
+			that.hasALotOfPets = ko.computed(function() {
+				return that.pets().length > 2
+			},that);
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+
+		// 変換処理(viewmodel → JSON文字列)
+		// メソッド名に注意(JSONは大文字)
+		var jsonData = ko.toJSON(viewmodel);
+		console.log(jsonData);
+
+		// 変換処理(viewmodel → プレーンなJavaScriptオブジェクト(observableなどを含まない))
+		// メソッド名に注意(JSは大文字)
+		var plainJs = ko.toJS(viewmodel);
+		console.log(plainJs);
+	</script>
+</html>
