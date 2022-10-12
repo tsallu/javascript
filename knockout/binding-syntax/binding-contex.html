@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!-- 
+			バインディングコンテキスト関連組み込み変数
+			・$data
+			・$index
+ 			・$parent, $parent[0], $parent[1]
+			　親コンテキスト(インデックスの番号が増えるほどルートコンテキストに近づく)
+			・$root
+			　ルートコンテキスト
+			・$parentContext
+			　foreachがネストしている場合に外側のforeachのコンテキストにアクセスするのに便利(ex)$parentContext.$index)
+			・$context
+			　現在のバインディングコンテキストオブジェクト
+			・$element
+			　現在のDOMエレメントの属性にアクセスするときなどに使う
+		-->
+
+		<h1 data-bind="text: className"></h1>
+		<div data-bind="foreach: students">
+			<p>
+				No.
+				<span data-bind="text: $index"></span> / 
+				所属クラス：
+				<!-- <span data-bind="text: $parent.className"></span> -->
+				<span data-bind="text: $root.className"></span> / 
+				名前：
+				<span data-bind="text: $data.firstName + ' ' + $data.lastName"></span>です。
+				<!-- <span data-bind="text: $context.$data.firstName + ' ' + $context.$data.lastName"></span>です。 -->
+			</p>
+		</div>
+
+		<p id="items" data-bind="text: $element.id">
+		</p>
+	</body>
+
+	<script>
+		function Person(firstName, lastName) {
+			this.firstName = firstName;
+			this.lastName = lastName;
+		}
+
+		function AppViewModel() {
+			var that = this;
+			
+			that.className = ko.observable('English Class');
+			that.students = ko.observable([
+				new Person('Rollo','Cowley'),
+				new Person('Eula', 'Adshead'),
+				new Person('Amethyst', 'Raynor')
+			]);
+
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
