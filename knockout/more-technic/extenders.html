@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>名前：<input data-bind="value: firstName"/></p>
+		<p><span data-bind="visible: firstName.hasError, text: firstName.validationMessage"></span></p>
+	</body>
+
+	<script>
+		// 拡張関数の設定
+		// viewmodelをnewする前に設定する必要がありそう
+		// 第一引数：ターゲットのobservableプロパティ
+		// 第二引数：オプション
+		ko.extenders.logChange = function(target, option) {
+			target.subscribe(function(newValue){
+				console.log(option + ': ' + newValue);
+			});
+			// observableオブジェクトを返す
+			return target;
+		}
+
+		ko.extenders.required = function(target, overrideMessage){
+			// observableプロパティにサブobservableプロパティを追加
+			target.hasError = ko.observable(false);
+			target.validationMessage  = ko.observable();
+
+			// バリデーション処理
+			function validate(newValue) {
+				target.hasError(newValue ? false : true);
+				target.validationMessage(newValue ? '' : overrideMessage || 'This field is required');
+			}
+
+			// 初期バリデーション
+			validate(target());
+
+			// プロパティ変更されたら、バリデーション処理を実行できるようにする
+			target.subscribe(validate);
+
+			return target;
+		}
+
+		// notify
+		// デフォルトで用意されているextender
+		// observableプロパティが変更なくても常に変更通知する。
+		// extend({notify: 'always'})
+
+		function AppViewModel() {
+			var that = this;
+
+			// 拡張
+			that.firstName = ko.observable('Bob').extend({logChange: "first name", required: "Please enter a first name."});
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+
+	</script>
+</html>
