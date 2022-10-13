@@ -43,15 +43,14 @@
 			return target;
 		}
 
-		// notify
+		// extend({notify: 'always'})
 		// デフォルトで用意されているextender
 		// observableプロパティが変更なくても常に変更通知する。
-		// extend({notify: 'always'})
 
 		function AppViewModel() {
 			var that = this;
 
-			// 拡張
+			// observableプロパティの機能拡張
 			that.firstName = ko.observable('Bob').extend({logChange: "first name", required: "Please enter a first name."});
 		}
 		var viewmodel = new AppViewModel();
