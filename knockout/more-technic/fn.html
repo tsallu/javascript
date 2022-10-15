@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<h3>All Tasks(<span data-bind="text: tasks().length"></span>)</h3>
+		<ul data-bind="foreach: tasks">
+			<li>
+				<input type="checkbox" data-bind="checked: done">
+				<span data-bind="text: title"></span>	
+			</li>
+		</ul>
+		<h3>Done Tasks(<span data-bind="text: doneTasks().length"></span>)</h3>
+		<ul data-bind="foreach: doneTasks">
+			<li>
+				<span data-bind="text: title"></span>	
+			</li>
+		</ul>
+	</body>
+
+	<script>
+		// knockoutのコア機能に機能追加を行う
+		// ko.subscribable.fn
+		// ko.observable.fn
+		// ko.observableArray.fn
+		// ko.computed.fn
+
+		// 継承関係(fnも継承される)
+		// ko.subscribable ← ko.observable ← ko.observableArray
+		// ko.subscribable ← ko.computed
+
+		// filterByProperty関数を追加
+		// これ以降に作成されるobservableArrayのプロパティはこの関数を使えるようになる
+		ko.observableArray.fn.filterByProperty = function(propName, matchValue){
+			var that = this;
+
+			return ko.pureComputed(function(){
+				// 元の配列
+				var originArray = that();
+				// フィルター後の配列
+				var filteredArray = [];
+
+				for(var i = 0; i < originArray.length; i++){
+					var current = originArray[i];
+					if (ko.unwrap(current[propName]) === matchValue) {
+						filteredArray.push(current);
+					}
+				}
+				return filteredArray;
+			}, that);
+		}
+
+		function Task(title, done) {
+			var that = this;
+
+			that.title = ko.observable(title);
+			that.done = ko.observable(done);
+		}
+
+		function AppViewModel(){
+			var that = this;
+
+			that.tasks = ko.observableArray([
+				new Task('Find new desktop background', true),
+				new Task('Put shiny stickers on laptop', false),
+				new Task('Request more reggae music in the office', true)
+			]);
+			// filterByPropertyを使用して、doneプロパティがtrueの要素だけの配列を作成する
+			that.doneTasks = that.tasks.filterByProperty("done", true);
+
+			// fnを使わない方法
+			// that.doneTasks = ko.pureComputed(function(){
+			// 	// 元の配列
+			// 	var originArray = that.tasks();
+			// 	// フィルター後の配列
+			// 	var filteredArray = [];
+			// 	for (var i = 0; i < originArray.length; i++){
+			// 		console.log(originArray[i].done());
+			// 		if (originArray[i].done()){
+			// 			filteredArray.push(originArray[i]);
+			// 		}
+			// 	}
+			// 	return filteredArray;
+			// },that);
+		}
+
+		var viewmodel = new AppViewModel();
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
