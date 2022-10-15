@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			<input data-bind="textInput: inputValue">
+		</p>
+	</body>
+
+	<script>
+		// バインディングハンドラーに割り込みで処理を行うプリプロセス処理
+		// 普通のアプリ開発では使用しない
+
+		// 引数
+		// value：html側でバインディングする際に指定した文字列
+		// name：バインディングの名前
+		// addBindingCallback：ほかのバインディングを呼び出す（設定する）場合に使用する。引数はname,valueが必要
+		ko.bindingHandlers.textInput.preprocess = function(value, name, addBindingCallback){
+			console.log(value);
+			console.log(name);
+			
+			// コールバック関数を呼び出してバインディングを追加できる
+			addBindingCallback('enable', 'inputValue().length < 0')
+
+			// 戻り値（undefined or 文字列）
+			// バインディングに指定する文字列を設定する
+			return value
+		}
+
+		// DOMノードのプリプロセス処理
+		// ko.bindingProvider.instance.preprocessNode = function(){
+
+		// }
+
+		var AppViewModel = function() {
+			var that = this;
+
+			that.inputValue = ko.observable('Bob');
+		};
+
+		var viewmodel = new AppViewModel();
+		ko.applyBindings(viewmodel);
+
+	</script>
+</html>
