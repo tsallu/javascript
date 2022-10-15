@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<p>
+			入力値1：
+			<input data-bind="value: inputValue1" />
+			※2秒後に変更通知が発生
+		</p>
+		<p>
+			入力値2：
+			<input data-bind="value: inputValue2" />
+			※5秒後に変更通知が発生
+		</p>
+		<form data-bind="submit: setPageSize">
+			
+			<p>現在のページサイズ：<span data-bind="text: pageSize"></span></p>
+			<p>
+				変更後のページサイズ：<input type="number" step="1" min="1" required data-bind="textInput: pageSizeTemp">
+				<button type="submit">変更</button>
+			</p>			
+		</form>
+		<p>
+			<span data-bind="text: currentPageData"></span>
+			<button data-bind="click: minusPage">←</button>
+			<button data-bind="click: plusPage">→</button>
+		</p>
+	</body>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+
+			that.inputValue1 = ko.observable('').extend({rateLimit: 2000});
+			// method:
+			//  'notifyAtFixedRate'(デフォルト値)：最初に変更されてから指定の期間経過後に変更通知が発生する
+			//  'notifyWhenChangesStop'：変更のたびにタイマーがリセットされ、変更停止後指定の期間経過後に変更通知が発生する
+			that.inputValue2 = ko.observable('').extend({rateLimit: {timeout: 5000, method: 'notifyWhenChangesStop'}});
+
+			that.pageSizeTemp = ko.observable();
+			that.pageSize = ko.observable(20);
+			that.pageIndex = ko.observable(1);
+			that.currentPageData = ko.observable('');
+
+			// pageIndex、pageSizeプロパティが変更されるたびに実行される
+			// setPageSize()が実行されるとpageIndexとpageSizeの変更通知を受けるため2回実行されてしまう。pageIndexが1の場合は1回。
+			// →extend({rateLimit: 0});を設定することで実行を1回に抑制できる。
+			ko.computed(function(){
+				var params = {page: that.pageIndex(), size: that.pageSize()}
+				//$.getJSON('/Some/Json/Service', params, this.currentPageData);
+				that.currentPageData(`現在のページ： ${that.pageIndex()}ページ目`);
+				console.log(`${that.pageIndex()}ページに変更されました。`)
+			}, that).extend({notify: 'always', rateLimit: 0});
+
+			that.minusPage = function(){
+				var pageIndex = that.pageIndex() == 1 ? 1 : that.pageIndex() - 1;
+				that.pageIndex(pageIndex);
+			};
+
+			that.plusPage = function(){
+				var pageIndex = that.pageIndex() == that.pageSize() ? that.pageSize() : that.pageIndex() + 1;
+				that.pageIndex(pageIndex);
+			};
+			
+			that.setPageSize = function(formElement){
+				that.pageSize(that.pageSizeTemp());
+				that.pageIndex(1);
+				that.pageSizeTemp();
+			};
+		}
+		var viewmodel = new AppViewModel();
+
+		ko.applyBindings(viewmodel);
+
+		viewmodel.inputValue1.subscribe(function(){
+			console.log('入力値1が変更されました。');
+		});
+		viewmodel.inputValue2.subscribe(function(){
+			console.log('入力値2が変更されました。');
+		});
+		
+	</script>
+</html>
