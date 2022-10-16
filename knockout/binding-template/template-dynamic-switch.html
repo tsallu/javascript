@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!-- nameにobservableプロパティを指定して、動的にテンプレートを切り替える -->
+		<h2>Participants</h2>
+		<div data-bind="template: {name: templateName, foreach: buyers}"></div>
+	</body>
+
+	<script type="text/html" id="active-template">
+		<h3 data-bind="text: name"></h3>
+		<p>Credits: <span data-bind="text: credits"></span></p>
+	</script>
+
+	<script type="text/html" id="inactive-template">
+		<h3 data-bind="text: name"></h3>
+		<p>Credits: <span data-bind="text: credits"></span> ※inactive</p>
+	</script>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+			
+			that.buyers = [
+				{ name: 'Franklin', credits: 250, active: ko.observable(true) },
+				{ name: 'David', credits: 7600, active: ko.observable(false) },
+				{ name: 'Bob', credits: 3610, active: ko.observable(false) }
+			];
+			// 第一引数：$data
+			// 第二引数：バインディングコンテキスト
+			that.templateName = function(buyer, bindingContext){
+				return buyer.active() ? 'active-template' : 'inactive-template';
+			};
+		}
+		var viewmodel = new AppViewModel();
+		ko.applyBindings(viewmodel);
+	</script>
+</html>

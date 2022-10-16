@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<h2>Participants</h2>
+		Here are the participants:
+		<!-- templateバインディング -->
+		<!-- templateをネストする場合にはバインディングコンテキストにアクセスしやすいようにasで別名を設定するとよい -->
+		<div data-bind="template: {name: 'person-template', foreach: buyer}"></div>
+		<div data-bind="template: {name: 'person-template', data: seller}"></div>
+	</body>
+
+	<!-- テンプレート -->
+	<!-- type="text/html"なので注意 -->
+	<script type="text/html" id="person-template">
+		<h3 data-bind="text: name"></h3>
+		<p>Credits: <span data-bind="text: credits"></span></p>	
+	</script>
+
+	<script>
+		function AppViewModel() {
+			var that = this;
+			
+			that.buyer = [{ name: 'Franklin', credits: 250 }, { name: 'David', credits: 7600 }];
+			that.seller = { name: 'Mario', credits: 5800 };
+		}
+		var viewmodel = new AppViewModel();
+		ko.applyBindings(viewmodel);
+	</script>
+</html>
