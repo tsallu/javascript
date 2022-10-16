@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" integrity="sha512-1LyBPWtezbX0LO4X4QzhfZd9jSetVu5W0IFpMV9ecq4lJUQBR6hx8uiNfUI2Aoe7LCF4rK1NV3rY+uil4VJ3QQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body>
+		<p>
+			姓：
+			<span data-bind="text: firstName"></span>
+		</p>
+		<p>
+			名：
+			<span data-bind="text: lastName"></span>
+		</p>
+	</body>
+
+	<script>
+		var AppViewModel = function() {
+			var that = this;
+
+			that.firstName = ko.observable('');
+			that.lastName = ko.observable('');
+		};
+		var jsObj = {
+			firstName: 'Leon',
+			lastName: 'Whitaker'
+		};
+
+		// javascriptオブジェクトからobservableなviewmodelを作成
+		var viewmodelFromJS = ko.mapping.fromJS(jsObj);
+		console.log(viewmodelFromJS);
+		// JSON文字列からobservableなviewmodelを作成
+		var viewmodelFromJSON = ko.mapping.fromJSON(ko.toJSON(viewmodelFromJS));
+		console.log(viewmodelFromJSON);
+
+		// observableなviewmodelからjavascriptオブジェクトに変換
+		var jsFromVM = ko.mapping.toJS(viewmodelFromJS);
+		console.log(jsFromVM);
+		// observableなviewmodelからjson文字列に変換
+		var jsonFromVM = ko.mapping.toJSON(viewmodelFromJS);
+		console.log(jsonFromVM);
+
+		ko.applyBindings(viewmodelFromJS);
+
+	</script>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" integrity="sha512-1LyBPWtezbX0LO4X4QzhfZd9jSetVu5W0IFpMV9ecq4lJUQBR6hx8uiNfUI2Aoe7LCF4rK1NV3rY+uil4VJ3QQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body>
+		<ul data-bind="foreach: $root">
+			<li data-bind="text: $data.id + ': ' + $data.name"></li>
+		</ul>
+	</body>
+
+	<script>
+		var obj = [
+			{id: 1, name: 'Alice'},
+			{id: 2, name: 'David'}
+		]
+
+		var mapping = {
+			// 同じオブジェクトかどうかを判定するキーを指定する
+			key: function(data) {
+				return ko.utils.unwrapObservable(data.id);
+			},
+			create: function(options){
+				return options.data;
+			},
+			update: function(options){
+				return options.data;
+			}
+		}
+
+		var viewmodel = ko.mapping.fromJS(obj, mapping);
+		//var viewmodel = ko.mapping.fromJS(obj);
+		ko.applyBindings(viewmodel);
+
+		console.log(viewmodel()[0]);
+		console.log(viewmodel()[1]);
+		// observableではない
+		console.log(ko.isObservable(viewmodel()[0]));
+		// observableではない
+		console.log(ko.isObservable(viewmodel()[1]));
+
+		// 配列内の指定のキーの要素を操作する
+		viewmodel.mappedRemove({id: 2});
+		viewmodel.mappedCreate({id: 3, name: 'Michael'});
+		viewmodel.mappedRemoveAll([{id: 1}, {id: 3}]);
+		//viewmodel.mappedRemoveAll([1,3]);
+		viewmodel.mappedCreate({id: 4, name: 'John'});
+		viewmodel.mappedCreate({id: 5, name: 'Richard'});
+
+		console.log(viewmodel.mappedIndexOf({id: 5}));
+		
+	</script>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" integrity="sha512-1LyBPWtezbX0LO4X4QzhfZd9jSetVu5W0IFpMV9ecq4lJUQBR6hx8uiNfUI2Aoe7LCF4rK1NV3rY+uil4VJ3QQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body>
+		<div>
+			<p>Name: <span data-bind="text: name"></span></p>
+			<p>City: <span data-bind="text: city"></span></p>
+			<p>Age: <span data-bind="text: age"></span></p>
+		</div>
+		<ul data-bind="foreach: children">
+			<li data-bind="text: $data.id() + ': ' + $data.name()"></li>
+		</ul>
+	</body>
+
+	<script>
+		var data1 = {
+			name: 'Scot',
+			children: [
+				{id: 1, name: 'Alicw'}
+			]
+		}
+
+		// マッピングオプション
+		// observableなviewmodelを作成する際の挙動の設定
+		var mapping = {
+			// childrenプロパティの設定をする際の挙動を定義する
+			'children': {
+				// 同じオブジェクトかどうか判断するキーを返却する
+				// idプロパティが同じなら同じものと判断され、createされずupdateのみ実行される
+				// key: function(data){
+				// 	return ko.utils.unwrapObservable(data.id)
+				// },
+				// プロパティの値の作成処理をカスタマイズする
+				create: function(options){
+					console.log('create');
+					// options.data：childrenオブジェクト
+					// options.parent：childrenオブジェクトの親オブジェクト(viewmodel)
+					console.log(options.data);
+					console.log(options.parent);
+					return {
+						id: ko.observable(options.data.id),
+						name: ko.observable(options.data.name)
+					};
+				},
+				// プロパティの値の更新処理をカスタマイズする
+				update: function(options){
+					console.log('update');
+					console.log(options.data);
+					console.log(options.parent);
+					return {
+						id: ko.observable(options.data.id),
+						name: ko.observable(options.data.name)
+					};
+				}
+			},
+			// viewmodelにマッピングしないプロパティを配列で指定
+			// デフォルト指定されたものとマージされる
+			//'ignore': ['age'],
+			// viewmodelからjavascriptオブジェクトに変換する際に含めるプロパティを配列で指定
+			//'include': ['age'],
+			// observableプロパティにしないで普通のプロパティにしたいものを配列で指定する
+			//'copy': ['name'],
+			// observableプロパティにしたいプロパティを配列で指定
+			//'observe': ['name', 'children']
+		}
+
+		// デフォルトのマッピングオプション設定を取得変更
+		//ko.mapping.defaultOptions().ignore = ['age'];
+		//ko.mapping.defaultOptions().include = ['city']
+		//ko.mapping.defaultOptions().copy = ['city']
+		//ko.mapping.defaultOptions().observe = ['city']
+
+		var viewmodel = ko.mapping.fromJS(data1, mapping);
+
+		var data2 = {
+			name: 'Scott',
+			children: [
+				{id: 1, name: 'Alice'},
+				{id: 2, name: 'David'}
+			],
+			city: 'New York',
+			age: 100
+		}
+
+		ko.mapping.fromJS(data2, viewmodel);
+
+		ko.applyBindings(viewmodel);
+
+		console.log(viewmodel.children()[0].name());
+		console.log(viewmodel.children()[1].name());
+		console.log(ko.toJSON(viewmodel));
+
+	</script>
+</html>
