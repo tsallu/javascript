@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!-- パラメータなしの場合 -->
+		<!-- observableプロパティを指定すれば動的にcomponentを変更可能 -->
+		<h4>First instance, without parameters</h4>
+		<div data-bind="component: 'message-editer'"></div>
+
+		<!-- パラメータありの場合 -->
+		<h4>Second instance, passing parameters</h4>
+		<div data-bind="component: {
+			name: 'message-editer',
+			params: {initialText: 'Hello World'}
+		}"></div>
+
+		<h4>Third instance, without viewmodel</h4>
+		<div data-bind="component: {
+			name: 'without-viewmodel',
+			params: {param1: 'Hello Tokyo'}
+		}"></div>
+	</body>
+
+	<script>
+		// コンポーネントの登録
+		// 第一引数：コンポーネント名
+		// 第二引数：オブジェクト
+		ko.components.register('message-editer', {
+			// ビューモデルコンストラクタ
+			viewModel: function(params){
+				var that = this;
+
+				that.text = ko.observable(params && params.initialText || '');
+			},
+			// テンプレート
+			template: 'Message: <input data-bind="value: text" /> '
+					+ '(length: <span data-bind="text: text().length"></span>)'
+		});
+
+		// ビューモデルの指定がない場合、paramsのプロパティをtemplateにバインドする
+		ko.components.register('without-viewmodel', {
+			template: 'Message: <input data-bind="value: param1" />'
+		});
+
+		ko.applyBindings();
+	</script>
+</html>
