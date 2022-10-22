@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body>
+		<my-special-list params="items: someArrayOfPeople">
+			<!-- このDOMエレメントがtemplateに渡される -->
+			The person <em data-bind="text: name"></em>
+			is <em data-bind="text: age"></em> years old.
+		</my-special-list>
+	</body>
+
+	<template id="my-special-list-template">
+		<h3>Here is a special list</h3>
+	
+		<ul data-bind="foreach: { data: myItems, as: 'myItem' }">
+			<li>
+				<h4>Here is another one of my special items</h4>
+				<!-- ko template: { nodes: $componentTemplateNodes, data: myItem } --><!-- /ko -->
+			</li>
+		</ul>
+	</template>
+
+	<script>
+		ko.components.register('my-special-list', {
+			template: { element: 'my-special-list-template' },
+			viewModel: function(params) {
+				this.myItems = params.items;
+			}
+		});
+
+		function MyViewModel(){
+			var that = this;
+
+			that.someArrayOfPeople = ko.observableArray([
+				{ name: 'Lewis', age: 56 },
+				{ name: 'Hathaway', age: 34 }
+			])
+		};
+
+		ko.applyBindings(new MyViewModel());
+	</script>
+</html>

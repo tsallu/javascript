@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	</head>
+	<body>
+		<ul data-bind="foreach: products">
+			<li class="product">
+				<strong data-bind="text: name"></strong>
+				<!-- componentはカスタムエレメント(タグ)として使用できる -->
+				<like-widget params="value: userRating"></like-widget>
+			</li>
+		</ul>
+	</body>
+
+	<script>
+		ko.components.register('like-widget', {
+			viewModel: {require: 'files/component-like-widget'},
+			template:
+        '<div class="like-or-dislike" data-bind="visible: !chosenValue()">\
+            <button data-bind="click: like">Like it</button>\
+            <button data-bind="click: dislike">Dislike it</button>\
+        </div>\
+        <div class="result" data-bind="visible: chosenValue">\
+            You <strong data-bind="text: chosenValue"></strong> it\
+        </div>'
+		});
+
+		function Product(name, rating){
+			var that = this;
+
+			that.name = name;
+			that.userRating = ko.observable(rating || null);
+		}
+
+		function MyViewModel(){
+			var that = this;
+
+			that.products = [
+				new Product('Garlic bread'),
+				new Product('Pain au chocolat'),
+				new Product('Seagull spaghetti', 'like')
+			];
+		}
+		ko.applyBindings(new MyViewModel());
+	</script>
+</html>

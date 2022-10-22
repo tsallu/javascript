@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<my-component params="message: 'hello world!!'"></my-component>
+	</body>
+
+	<script>
+		// 指定されたタグとコンポーネントを紐づけるための関数
+		ko.components.getComponentNameForNode = function(node) {
+			var tagNameLower = node.tagName && node.tagName.toLowerCase();
+			
+			// タグ名とコンポーネント名を別のものに変更する
+			// タグ名：my-component
+			// コンポーネント名：my-component-01
+			tagNameLower += '-01'
+
+			// 登録済みのタブの場合
+			if (ko.components.isRegistered(tagNameLower)) {
+				console.log(`registered tag: ${tagNameLower}`);
+
+				// コンポーネント名を返却
+				return tagNameLower;
+			} else if (tagNameLower === "special-element") {
+				return "MySpecialComponent";
+			} else {
+				// component以外のタグ(body、headなど)
+				return null;
+			}
+		}
+
+		ko.components.register('my-component-01', {
+			viewModel: function(params) {
+				var that = this;
+				that.message = params.message;
+			},
+			template: '<p>Message: <span data-bind="text: message"></span></p>'
+		});
+
+		ko.applyBindings();
+		
+	</script>
+</html>
