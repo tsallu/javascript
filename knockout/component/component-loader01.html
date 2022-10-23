@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+	</head>
+	<body>
+		<!-- <div data-bind="component: 'my-component'"></div> -->
+
+		<!-- カスタムエレメント -->
+		<!-- カスタムコンポーネントローダー(getConfig)を使用する場合は、明示的にregisterしないとカスタムエレメントは使用できないので注意 -->
+		<my-component></my-component>
+
+		<!-- Declare template -->
+		<template id='my-component-template'>
+			<p>Hello, <span data-bind="text: prop1"></span></p>
+		</template>
+	</body>
+
+	<script>
+		// コンポーネントローダー、ユーティリティ関数
+		// ko.components.register(name, configuration);
+		// ko.components.isRegistered(name)
+		// ko.components.unregister(name)
+		// ko.components.get(name, callback)
+		// ko.components.defaultCachedDefinition(name) 
+
+		// デフォルトローダー、関数
+		// ko.components.defaultLoader.getConfig(name, callback)
+		// ko.components.defaultLoader.loadComponent(name, componentConfig, callback)
+		// ko.components.defaultLoader.loadTemplate(name, templateConfig, callback)
+		// ko.components.defaultLoader.loadViewModel(name, viewModelConfig, callback)
+
+		// コンポーネントローダーの配列
+		// 一番先頭に設定されたローダーが優先順位が高い
+		// ko.components.loaders
+		// ko.components.loaders.push(myLowPriorityLoader)
+		// ko.components.loaders.unshift(myHighPriorityLoader)
+		// ko.components.loaders.unshift(ko.components.defaultLoader)
+
+		// カスタムコンポーネントローダーの実装例
+		// ko.components.registerを実行する必要がない(ただ、その場合はカスタムエレメント使用不可)
+		var namingConventionLoader = {
+			getConfig: function(name, callback){
+				console.log(`component name: ${name}`)
+				// コンポーネント名に基づき、viewmodelとtemplateを設定する
+				var viewModelConfig = MyApp[toPascalCase(name) + 'ViewModel'],
+					templateConfig = {element: name + '-template'};
+
+				callback({
+					viewModel: viewModelConfig,
+					template: templateConfig
+				})
+			}
+		};
+
+		function toPascalCase(dasherized) {
+ 		   return dasherized.replace(/(^|-)([a-z])/g, function (g, m1, m2) { return m2.toUpperCase(); });
+		}
+
+		ko.components.loaders.unshift(namingConventionLoader);
+
+		// カスタムコンポーネントローダーを使用する場合にはカスタムエレメントは登録されないので明示的に登録する必要あり
+		// 第二引数は空のオブジェクトでOK
+		ko.components.register('my-component', {})
+
+		// ビューモデル
+		window.MyApp = window.MyApp || {};
+		MyApp.MyComponentViewModel = function(params) {
+			var that = this;
+			that.prop1 = 'David';
+		}
+
+		ko.applyBindings();
+		
+	</script>
+</html>
