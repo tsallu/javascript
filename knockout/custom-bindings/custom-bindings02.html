@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<p>Name: <input data-bind="hasFocus: editingName" /></p>
+
+		<div data-bind="visible: editingName">You're editing the name</div>
+		<button data-bind="enable: !editingName(), click:function() { editingName(true) }">Edit name</button>
+	</body>
+
+	<script>
+		ko.bindingHandlers.hasFocus = {
+			// DOM要素のイベントハンドラーを設定する
+			init: function(element, valueAccessor) {
+				// focus
+				$(element).focus(function(){
+					var val = valueAccessor();
+					val(true);
+				});
+				// lost focus
+				$(element).blur(function(){
+					var val = valueAccessor();
+					val(false);
+				});
+    		},
+			update: function(element, valueAccessor){
+				var val = valueAccessor();
+				var valUnwrapped = ko.unwrap(val);
+				console.log(valUnwrapped);
+				if(valUnwrapped){
+					element.focus();
+				}else{
+					element.blur();
+				}
+			}
+		}
+
+		var viewModel = {
+        	editingName: ko.observable()
+		};
+		ko.applyBindings(viewModel);
+			
+	</script>
+</html>

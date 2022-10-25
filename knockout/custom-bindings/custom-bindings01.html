@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div data-bind="slideVisible: giftWrap, slideDuration:600">You have selected the option</div>
+		<label><input type="checkbox" data-bind="checked: giftWrap" /> Gift wrap</label>
+	</body>
+
+	<script>
+		// カスタムバインディングの登録
+		ko.bindingHandlers.slideVisible = {
+			// DOMの初期状態を設定する
+			// init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+			init: function(element, valueAccessor) {
+				console.log('init');
+				var value = ko.unwrap(valueAccessor());
+				$(element).toggle(value);
+    		},
+			// },
+			// element: DOM要素
+			// valuAccessor: 現在のモデルのプロパティ値を取得する関数
+			// allBindings: バインドされているすべてのモデル値を取得する関数
+			//  allBindings.get('name'), allBindings.has('name')
+			// viewModel: ver3.x以降で廃止予定
+			// bindingContext: バインディングコンテキスト
+			//update: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+			update: function(element, valueAccessor, allBindings) {
+				console.log('update');
+				var val = valueAccessor();
+				// observableでない生のデータ
+				var valUnwrapped = ko.unwrap(val);
+				var duration = allBindings.get('slideDuration') || 400
+				if (valUnwrapped == true){
+					$(element).css("color","blue");
+					$(element).toggle(valUnwrapped);
+				}else{
+					$(element).css("color","black");
+					$(element).toggle(valUnwrapped);
+				}
+    		}
+		}
+
+		var viewModel = {
+				giftWrap: ko.observable(false)
+		};
+		ko.applyBindings(viewModel);
+		
+	</script>
+</html>
