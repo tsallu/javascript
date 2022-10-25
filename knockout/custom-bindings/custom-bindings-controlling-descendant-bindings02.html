@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div data-bind="withProperties: { emotion: 'happy' }">
+			Today I feel <span data-bind="text: emotion"></span>.
+		</div>
+		<div data-bind="withProperties: { emotion: 'whimsical' }">
+			Today I feel <span data-bind="text: emotion"></span>.
+		</div>
+	</body>
+
+	<script>
+		ko.bindingHandlers.withProperties = {
+			init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+				console.log(bindingContext);
+				// extend(): バインディングコンテキストのクローン生成関数
+				var innerBindingContext = bindingContext.extend(valueAccessor);
+				console.log(innerBindingContext);
+				// 配下のバインディングにバインディングコンテキストを適用
+				ko.applyBindingsToDescendants(innerBindingContext, element);
+
+				// 配下のバインディングの有効化
+				return { controlsDescendantBindings: true };
+			}
+		};
+
+		ko.applyBindings();
+			
+	</script>
+</html>

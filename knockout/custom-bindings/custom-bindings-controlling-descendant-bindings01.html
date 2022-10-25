@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div data-bind="allowBindings: true">
+			<div data-bind="text: 'Replacement'">Original</div>
+		</div>
+		
+		<div data-bind="allowBindings: false">
+			<div data-bind="text: 'Replacement'">Original</div>
+		</div>
+	</body>
+
+	<script>
+		ko.bindingHandlers.allowBindings = {
+			init: function(elem, valueAccessor) {
+				var shouldAllowBindings = ko.unwrap(valueAccessor());
+				// 配下のバインディングを有効化するかどうかを真偽値で返す
+				return { controlsDescendantBindings: !shouldAllowBindings };
+			}
+		};
+
+		ko.applyBindings();
+			
+	</script>
+</html>

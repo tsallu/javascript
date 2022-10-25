@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>knockoutサンプルコード</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div data-bind="withProperties: { displayMode: 'twoColumn' }">
+			The outer display mode is <span data-bind="text: displayMode"></span>.
+			<div data-bind="withProperties: { displayMode: 'doubleWidth' }">
+				The inner display mode is <span data-bind="text: displayMode"></span>, but I haven't forgotten
+				that the outer display mode is <span data-bind="text: $parentContext.displayMode"></span>.
+			</div>
+		</div>
+	</body>
+
+	<script>
+		ko.bindingHandlers.withProperties = {
+			init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+				// createChildContext(): 子要素用のバインディングコンテキストを作成する
+				// $parentContext === bindingContext になる
+				var childBindingContext = bindingContext.createChildContext(
+					bindingContext.$rawData,
+					null,
+					function(context) {
+						console.log(context);
+						console.log(valueAccessor());
+						// プロパティの追加
+						ko.utils.extend(context, valueAccessor());
+					});
+				ko.applyBindingsToDescendants(childBindingContext, element);
+
+				return { controlsDescendantBindings: true };
+			}
+		};
+
+		ko.applyBindings();
+			
+	</script>
+</html>
